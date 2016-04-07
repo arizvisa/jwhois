@@ -235,7 +235,7 @@ make_connect(const char *host, int port)
 
   retlen = sizeof(retval);
   error = getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &retval, &retlen);
-  if (error < 0 || retval)
+  if (error < 0 || retval == 0)
     {
       return -1;
     }
@@ -288,7 +288,7 @@ make_connect(const char *host, int port)
 
       retlen = sizeof(retval);
       error = getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &retval, &retlen);
-      if (error < 0 || retval)
+      if (error < 0 || retval == 0)
 	{
 	  break;
 	}
