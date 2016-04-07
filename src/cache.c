@@ -108,6 +108,7 @@ cache_init(void)
   int iret;
   char *ret, *ret2;
   struct jconfig *j;
+char* allocatedpath = NULL;
 #ifndef NOCACHE
   datum dbkey = {"#jwhois#cacheversion#1", 22};
   datum dbstore = {"1", 1};
@@ -121,9 +122,17 @@ cache_init(void)
 
   jconfig_set();
   j = jconfig_getone("jwhois", "cachefile");
-  if (!j)
-    cfname = LOCALSTATEDIR "/jwhois.db";
-  else
+  if (!j) {
+
+    cfname = allocatedpath = path_to_file("/jwhois.db");
+    if (allocatedpath == NULL) {
+      if (verbose) printf("[Cache: %s]\n",
+			  _("Unable to determine path to jwhois.db\n"));
+      cache = 0;
+      return -1;
+    }
+    //cfname = LOCALSTATEDIR "/jwhois.db";
+	} else
     cfname = j->value;
 
   if (verbose>1) printf("[Cache: Cache file name = \"%s\"]\n",cfname);
@@ -154,6 +163,8 @@ cache_init(void)
     {
       if (verbose) printf("[Cache: %s %s]\n", _("Unable to open"),
 			  cfname);
+      if (cfname)
+        free(cfname);
       cache = 0;
       return -1;
     }
@@ -166,6 +177,8 @@ cache_init(void)
     }
   dbm_close(dbf);
 #endif
+  if (allocatedpath)
+    free(allocatedpath);
   return 0;
 }
 

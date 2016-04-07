@@ -352,3 +352,55 @@ timeout_init()
   connect_timeout = atoi(ret2);
 #endif /* HAVE_STRTOL */
 }
+
+#include <windows.h>
+#include <sys/cygwin.h>
+
+char*
+path_to_file(char* suffix)
+{
+  char* filename_w = NULL;
+  char* filename_p = NULL;
+  int filename_sz;
+  char stupidbuffer[MAX_PATH];
+
+  // windows path
+  filename_sz = GetModuleFileName(NULL, stupidbuffer, sizeof(stupidbuffer)-1);
+  if (filename_sz == 0 && GetLastError() != ERROR_SUCCESS)
+    goto fail;
+
+  filename_w = malloc(filename_sz+1);
+  if (filename_w == NULL)
+    goto fail;
+
+  if (GetModuleFileName(NULL, filename_w, filename_sz+1) != filename_sz)
+    goto fail;
+  filename_w[filename_sz] = '\x00';
+
+  filename_sz = cygwin_conv_path(CCP_WIN_A_TO_POSIX|CCP_ABSOLUTE, filename_w, NULL, 0);
+  if (filename_sz < 0)
+    goto fail;
+
+  filename_p = malloc(filename_sz+1);
+  if (filename_p == NULL)
+    goto fail;
+  filename_p[filename_sz] = '\x00';
+
+  if (cygwin_conv_path(CCP_WIN_A_TO_POSIX|CCP_ABSOLUTE, filename_w, filename_p, filename_sz) < 0)
+    goto fail;
+  free(filename_w);
+
+  filename_w = strrchr(filename_p, '/');
+  if (filename_w)
+    *filename_w = '\x00';
+
+  filename_w = realloc(filename_p, strlen(filename_p) + strlen(suffix)+ sizeof(""));
+  if (filename_w == NULL)
+    goto fail;
+  return strcat(filename_w, suffix);
+
+fail:
+  if (filename_w == NULL) free(filename_w);
+  if (filename_p == NULL) free(filename_p);
+  return NULL;
+}

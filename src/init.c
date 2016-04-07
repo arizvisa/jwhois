@@ -155,6 +155,7 @@ parse_args(int *argc, char ***argv)
   int optch, option_index;
   char *ret;
   FILE *in;
+  char* allocatedpath = NULL;
   
   cache = 1;
   forcelookup = 0;
@@ -273,12 +274,26 @@ parse_args(int *argc, char ***argv)
     }
   else
     {
+      allocatedpath = path_to_file("/jwhois.conf");
+      if (allocatedpath == NULL) {
+	  printf("[%s: %s]\n",
+		  config, _("Unable to locate path to jwhois.conf"));
+          exit(1);
+      }
+      in = fopen(allocatedpath, "r");
+      if (!in && verbose)
+	printf("[%s: %s]\n",
+	       allocatedpath, _("Unable to open"));
+      else
+	config = allocatedpath;
+/*
       in = fopen(SYSCONFDIR "/jwhois.conf", "r");
       if (!in && verbose)
 	printf("[%s: %s]\n",
 	       SYSCONFDIR "/jwhois.conf", _("Unable to open"));
       else
 	config = SYSCONFDIR "/jwhois.conf";
+*/
     }
   if (in)
     jconfig_parse_file(in);
@@ -300,5 +315,7 @@ parse_args(int *argc, char ***argv)
 
       printf("[Debug: Force rwhois = %s]\n", rwhois?"Yes":"No");
     }
+  if (allocatedpath)
+    free(allocatedpath);
   return optind;
 }
