@@ -32,6 +32,6 @@ jwhois_CFLAGS = $(OLDCFLAGS) -DSYSCONFDIR="\"$(sysconfdir)\"" \
 jwhois_LDADD = $(top_srcdir)/gl/libgnu.a
 
 AM_CFLAGS = $(jwhois_CFLAGS)
-
+AM_LDFLAGS = $(jwhois_LIBS)
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/intl -I$(top_srcdir)/gl

@@ -18,10 +18,10 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
 
-EXTRA_DIST = config.rpath  m4/ChangeLog config.rpath include/*.h example/jwhois.conf m4/*.m4 jwhois.spec.in jwhois.spec
+EXTRA_DIST = config.rpath m4/ChangeLog config.rpath include/*.h example/jwhois.conf m4/*.m4 jwhois.spec.in jwhois.spec
 SUBDIRS = m4 doc gl src example po
 
 AM_CPPFLAGS = -I$(top_srcdir)/gl
-LDADD = lib/libgnu.a
+LDADD = gl/libgnu.a
 
-ACLOCAL_AMFLAGS = -I m4 -I gl/m4
+ACLOCAL_AMFLAGS = -I m4

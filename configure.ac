@@ -17,10 +17,14 @@ dnl Process this file with autoconf to produce a configure script.
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ##
-AC_INIT
-AC_CONFIG_SRCDIR([src/jconfig.c])
-AM_INIT_AUTOMAKE(jwhois,4.0)
-AM_CONFIG_HEADER(config.h)
+AC_PREREQ([2.69])
+AC_CONFIG_MACRO_DIRS([m4 ../gnulib/m4])
+AC_INIT([jwhois],[4.0])
+
+LT_PREREQ([2.4.6])
+LT_INIT([static disable-shared])
+
+AM_INIT_AUTOMAKE
 
 AH_TEMPLATE([PACKAGE], [package name])
 AH_TEMPLATE([VERSION], [package version])
@@ -87,12 +91,12 @@ ALL_LINGUAS="es fr hu id it nl pl pt_BR ro ru rw sv tr vi zh_TW"
 
 AC_PROG_INSTALL
 AC_PROG_CC
-AC_PROG_RANLIB
 gl_EARLY
 
 GETTEXT_PACKAGE=jwhois
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
+AM_GNU_GETTEXT_VERSION([0.19.6])
 AM_GNU_GETTEXT([external])
 
 AM_ICONV
@@ -211,7 +215,9 @@ AC_SUBST(OLDCFLAGS)
 
 gl_INIT
 
-AC_OUTPUT([ po/Makefile.in m4/Makefile 
+AC_CONFIG_SRCDIR([src/jconfig.c])
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([ po/Makefile.in m4/Makefile 
 Makefile 
 doc/Makefile 
 doc/sv/Makefile 
@@ -221,3 +227,4 @@ example/Makefile
 jwhois.spec
 ])
 
+AC_OUTPUT

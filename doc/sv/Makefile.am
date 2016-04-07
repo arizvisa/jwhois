@@ -22,4 +22,3 @@ man1dir = $(mandir)/sv/man1
 man_MANS = jwhois.1
 
 EXTRA_DIST = $(man_MANS)
-
